@@ -1,13 +1,16 @@
 const jwt = require("jsonwebtoken");
 
 const genneralAccessToken = async (payload) => {
+  const { time, ...rest } = payload;
+  console.log("time", time);
+  console.log("rest", rest);
   const access_token = jwt.sign(
     {
-      ...payload,
+      ...rest,
     },
     "access_token",
     {
-      expiresIn: "10s",
+      expiresIn: time,
     }
   );
   return access_token;
@@ -25,13 +28,14 @@ const genneralRefreshToken = async (payload) => {
   return refresh_token;
 };
 const refreshJWTToken = async (token) => {
+  console.log("token", token);
   return new Promise(async (resolve, reject) => {
     try {
       jwt.verify(token, "refresh_token", async (err, user) => {
         if (err) {
           resolve({
             status: "ERROR",
-            message: "The authentication",
+            message: "The authentication3",
           });
         }
         const access_token = await genneralAccessToken({

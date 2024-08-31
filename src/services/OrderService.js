@@ -73,7 +73,12 @@ const createOrder = (newOrder) => {
           status,
         });
         if (createOrder) {
-          await MailerService.sendEmailCreateOrder(email, orderItems);
+          await MailerService.sendEmailCreateOrder(
+            email,
+            orderItems,
+            (emailId = {}),
+            (isForgot = false)
+          );
           resolve({
             status: "OK",
             message: `success`,

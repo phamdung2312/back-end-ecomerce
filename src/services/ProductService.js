@@ -97,6 +97,8 @@ const updateProduct = (productId, data) => {
   });
 };
 const getAllProduct = (limit, page, sort, filter) => {
+  console.log("filter", filter.type);
+
   return new Promise(async (resolve, reject) => {
     let objectSort = {};
     let objectFilter = {};
@@ -104,6 +106,7 @@ const getAllProduct = (limit, page, sort, filter) => {
       if (filter) {
         objectFilter = { [filter[0]]: { $regex: filter[1] } };
       }
+      console.log("objectFilter", objectFilter);
       if (sort) {
         objectSort = { [sort[1]]: sort[0] };
       }
@@ -112,14 +115,14 @@ const getAllProduct = (limit, page, sort, filter) => {
         .skip(limit * (page - 1))
         .sort(objectSort)
         .find(objectFilter);
-      const totalProduct = await Product.length;
 
+      const totalProduct = await Product.countDocuments();
       resolve({
         status: "OK",
         message: "get all products success",
         data: allProducts,
-        totalProduct: totalProduct + 1,
-        totalPage: Math.ceil((totalProduct + 1) / limit),
+        totalProduct: totalProduct,
+        totalPage: Math.ceil(totalProduct / limit),
         pageCurrent: page,
       });
     } catch (error) {

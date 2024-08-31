@@ -146,10 +146,9 @@ const getUserDetails = async (req, res) => {
   }
 };
 const refreshToken = async (req, res) => {
-  console.log("req.headers", req.headers);
   try {
     const token = req.headers.token.split(" ")[1];
-    console.log("token", token);
+
     if (!token) {
       return res.status(200).json({
         status: "ERR",
@@ -167,10 +166,64 @@ const refreshToken = async (req, res) => {
 const logoutUser = async (req, res) => {
   try {
     res.clearCookie("refresh_token");
+
     return res.status(200).json({
       status: "OK",
       message: "Log out user successfully",
     });
+  } catch (error) {
+    return res.status(404).json({
+      message: error,
+    });
+  }
+};
+const forgotPassword = async (req, res) => {
+  try {
+    const { data: email } = req.body;
+    console.log("email", email);
+    const regexEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+    const checkEmail = regexEmail.test(email);
+    if (!checkEmail) {
+      return res.status(200).json({
+        status: "ERR",
+        message: "The email is invalid",
+      });
+    }
+    const response = await UserService.forgotPassword(email);
+    console.log("response", response);
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(404).json({
+      message: error,
+    });
+  }
+};
+const resetPassword = async (req, res) => {
+  try {
+    const { id, token } = req.params;
+    const response = await UserService.resetPassword(id, token);
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(404).json({
+      message: error,
+    });
+  }
+};
+const updatePassword = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const { valueInputPassword, valueInputConfirmPassword } = req.body;
+    if (valueInputPassword !== valueInputConfirmPassword) {
+      return res.status(200).json({
+        status: "ERR",
+        message: "The password is equal confirmPassword",
+      });
+    }
+    const response = await UserService.updatePassword(
+      userId,
+      valueInputPassword
+    );
+    return res.status(200).json(response);
   } catch (error) {
     return res.status(404).json({
       message: error,
@@ -188,4 +241,7 @@ module.exports = {
   refreshToken,
   logoutUser,
   deleteManyUser,
+  forgotPassword,
+  resetPassword,
+  updatePassword,
 };

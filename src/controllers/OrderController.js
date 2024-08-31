@@ -12,6 +12,7 @@ const createOrder = async (req, res) => {
   }
 };
 const getAllOrder = async (req, res) => {
+  console.log("productId");
   try {
     const productId = req.params.id;
     if (!productId) {

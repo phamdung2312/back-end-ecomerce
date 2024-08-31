@@ -1,4 +1,5 @@
 const express = require("express");
+
 const router = express.Router();
 const userController = require("../controllers/UserController");
 const {
@@ -19,5 +20,8 @@ router.get(
 );
 router.post("/refresh-token", userController.refreshToken);
 router.post("/delete-many", authMiddleware, userController.deleteManyUser);
+router.post("/forgot-password", userController.forgotPassword);
+router.get("/reset-password/:id/:token", userController.resetPassword);
+router.put("/update-password/:id", userController.updatePassword);
 
 module.exports = router;

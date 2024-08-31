@@ -10,6 +10,7 @@ const route = require("./routes");
 const port = process.env.PORT || 3001;
 app.use(cookieParser());
 
+app.use(bodyParser.urlencoded({ extended: true }));
 // cho phép client truy cập từ domain k phải là 3001
 app.use(cors());
 app.use(express.json({ limit: "50mb" }));
